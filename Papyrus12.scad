@@ -34,7 +34,7 @@ UPPER_CASE = str(
     "ZXCVBNM,.?"
 );
 
-// These three optional adjustment functions allow for tweaking letters.
+// These four optional adjustment functions allow for tweaking letters.
 // The c argument is the letter, x and y are the coordinates on the ball.
 
 // Here we tilt these bottom row letters with descenders back 1 degree
@@ -49,6 +49,9 @@ function AdjustTilt(c,x,y) =
 
 // This adds an offset or inset to make certain letters heavier or lighter
 // function AdjustWeight(c,x,y);
+
+// Return an array [dx,dy] to tweak the position of the letter on the ball
+// function AdjustPosition(c,x,y);
 
 // Finally, we generate the model:
 TypeBall();

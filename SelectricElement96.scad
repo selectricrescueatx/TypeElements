@@ -3,11 +3,11 @@
 
 /* --------- START ---------
 
-// SelectricElement88.scad contains all the low-level stuff that's common to all balls
-include <SelectricElement88.scad>
+// SelectricElement96.scad contains all the low-level stuff that's common to all balls
+include <SelectricElement96.scad>
 
 // enable to skip slow rendering of letters on the ball
-PREVIEW_LABEL = false;
+PREVIEW_LABEL = true;
 
 // The name of the font, as understood by the system.
 // Note: if the system doesn't recognize the font it
@@ -33,26 +33,31 @@ module Labels()
 // The font height, adjusted for the desired pitch
 // (Note that this is multiplied by faceScale=2.25 in LetterText(),
 // so the scale is somewhat arbitrary)
-LETTER_HEIGHT = 2.15;
+LETTER_HEIGHT = 2.75;
 
 // Keyboard layout
 
+// Note: the characters ²³§¶ are on the ball but
+// not accessible via the S3 keyboard
+
 LOWER_CASE = str(
-    "1234567890-=",
-    "qwertyuiop½",
+    "±1234567890-=",
+    "qwertyuiop½]",
     "asdfghjkl;'",
-    "zxcvbnm,./"
+    "zxcvbnm,./",
+    "²§"
 );
 
 UPPER_CASE = str(
-    "!@#$%¢&*()_+",
-    "QWERTYUIOP¼",
+    "°!@#$%¢&*()_+",
+    "QWERTYUIOP¼[",
     "ASDFGHJKL:\"",
-    "ZXCVBNM,.?"
+    "ZXCVBNM,.?",
+    "³¶"
 );
 
 // Offset each glyph by this amount, making the characters heavier or lighter
-CHARACTER_WEIGHT_ADJUSTMENT = -0.1;
+CHARACTER_WEIGHT_ADJUSTMENT = 0;
 
 // balance the vertical smear with extra horizontal weight
 HORIZONTAL_WEIGHT_ADJUSTMENT = 0.2;
@@ -82,7 +87,7 @@ TypeBall();
 // based on original project by Steve Malikoff
 // https://www.thingiverse.com/thing:4126040
 
-// Modifications by Dave Hayden (dave@selectricrescue.org), last update 2023.12.15
+// Modifications by Dave Hayden (dave@selectricrescue.org), last update 2023.11.10
 
 // Huge thanks to Sam Ettinger for his feedback and
 // for proving that resin-printed Selectric balls
@@ -123,20 +128,20 @@ TypeBall();
 // Font and cosmetic parameters
 // ---------------------------------------------------
 
-// See comment block above, between BEGIN and END, for parameters expected to be defined before including this one. 
+// See SelectricElementExample.scad for parameters expected to be defined before including this one. 
 
 // ---------------------------------------------------
 // Typeball dimensions
 // ---------------------------------------------------
 
 // How far the type's contact face projects outwards above the ball surface
-LETTER_ALTITUDE = 1.9;
+LETTER_ALTITUDE = 1.7;
 
 // overrideable function for adjusting altitude of individual characters. c is the printing character, e.g. '&', x and y are the position on the ball
 function AdjustAltitude(c,x,y) = 0;
 
 // Tweak tilt of characters per row for better descenders/balance. Ordered top row to bottom. Amount is backwards rotation: top goes back and bottom goes forward
-ROW_TILT_ADJUST = [ -0.3, -0.6, 0, 0.8 ];
+ROW_TILT_ADJUST = [ -0.4, -1.1, -0.8, 0.3 ];
 
 // overrideable function for further adjustment to tilt of individual characters
 function AdjustTilt(c,x,y) = 0;
@@ -159,8 +164,8 @@ $fn = FACETS;
 
 // Parameters have been tuned for printing on a Creality Halot Mage resin printer, using Sunlu ABS-Like resin
 
-// latitudes of the four rows of type
-LATITUDES = [ 32.5, 16.2, -0.2, -16.4 ];
+// latitudes of the four rows of type, top to bottom
+LATITUDES = [ 31.0, 15.7, 0, -15.7 ];
 
 // overrideable function for adjusting position of individual characters, added to CHARACTER_WEIGHT_ADJUSTMENT
 
@@ -184,7 +189,7 @@ SKIRT_HEIGHT = TYPEBALL_HEIGHT - TYPEBALL_TOP_ABOVE_CENTRE+ TYPEBALL_SKIRT_TOP_B
 TOOTH_PEAK_OFFSET_FROM_CENTRE = 6.1; // Lateral offset of the tilt ring detent pawl
 
 // Parameters for the centre boss that goes onto tilt ring spigot (upper ball socket)
-BOSS_INNER_RAD = 4.34;
+BOSS_INNER_RAD = 4.35;
 BOSS_OUTER_RAD = 5.8;
 BOSS_HEIGHT = 8.07;
 
@@ -195,26 +200,20 @@ BOSS_FILLET_RAD = 3;
 BOSS_SLEEVE_WIDTH = 1;
 BOSS_SLEEVE_BOTTOM_CLEARANCE = 1.6;
 
-NOTCH_ANGLE = 131.8; // Must be exact! If not, ball doesn't detent correctly
-NOTCH_WIDTH = 1.15; // Should be no slop here, either
-NOTCH_DEPTH = 2;
-NOTCH_HEIGHT = 2.2;
-NOTCH_MOUTH_X = 0.2;
-NOTCH_MOUTH_Y = 0.5;
-
-SLOT_ANGLE = NOTCH_ANGLE + 180;
-SLOT_WIDTH = 1.9;
-SLOT_DEPTH = 0.4;
+SLOT_ANGLE = 137;
+SLOT_WIDTHS = [ 1.15, 1.15, 2.15, 1.15 ];
+SLOT_DEPTHS = [ 1.0, 0.75, 0.75, 0.75 ];
 
 // Inside reinforcement ribs
-RIBS = 11;
+RIBS = 12;
 RIB_LENGTH = 10;
 RIB_WIDTH = 8;
 RIB_HEIGHT = 2.5;
 
 // Character layout
-CHARACTERS_PER_LATITUDE = 22;   // For Selectric I and II. 4 x 22 = 88 characters total.
-CHARACTER_LONGITUDE = 360 / CHARACTERS_PER_LATITUDE; // For Selectric I and II
+COLUMN_ALIGNMENT = 15.5;
+CHARACTERS_PER_LATITUDE = 24;   // For Selectric III. 4 x 24 = 96 characters total.
+CHARACTER_LONGITUDE = 360 / CHARACTERS_PER_LATITUDE;
 
 EPSILON = 0.003; // to fix z-fighting in preview
 
@@ -229,7 +228,7 @@ module TypeBall()
     {
         difference()
         {
-            SelectricLayout88();
+            SelectricLayout96();
             TrimTop();
             
             // trim any bits that extended into the detent teeth
@@ -240,27 +239,31 @@ module TypeBall()
 
     difference()
     {
-        union()
-        {   
-            HollowBall();
-            BossSleeve();
-        }
-        
-        Slot();
-        Notch();
-        TopMarkings();
+        HollowBall();
+
+        Slots();
+        rotate([0,0,3]) TopMarkings();
     }
+    
+    BossSleeve();
 }
 
 
 // Keyboard location of each letter on the ball
-charmap88 =
-   [ 0,  2,  6,  7,  3, 34,  1,  4,  5,  9,  8,
-    35, 18, 25, 36, 31, 16, 39, 14, 30, 28, 38,
-    40, 37, 15, 23, 20, 22, 42, 33, 19, 24, 13,
-    27, 26, 32, 41, 43, 29, 11, 21, 12, 17, 10 ];
+/*
+/398460257²z
+=§ukbcetsi';
+±½hxanrodwmv
+,]glfypqj.1-
+*/
 
-module SelectricLayout88()
+charmap96 =
+  [ 45,  3,  9,  8,  4,  6, 10,  2,  5,  7, 46, 36,
+    12, 47, 19, 32, 40, 38, 15, 17, 26, 20, 35, 34,
+     0, 23, 30, 37, 25, 41, 16, 21, 27, 14, 42, 39,
+    43, 24, 29, 33, 28, 18, 22, 13, 31, 44,  1, 11 ];
+
+module SelectricLayout96()
 {
     ROWCHARS = CHARACTERS_PER_LATITUDE/2;
     
@@ -268,23 +271,23 @@ module SelectricLayout88()
     {
         latitude = LATITUDES[l];
         rowweight = CHARACTER_WEIGHT_ADJUSTMENT;
-        
-        for ( x=[0:2*ROWCHARS-1] )
+
+         for ( x=[0:2*ROWCHARS-1] )
         {
             p = x % ROWCHARS;
-            pos = charmap88[ROWCHARS*l+p];
+            pos = charmap96[ROWCHARS*l+p];
             
             c = x < ROWCHARS ? LOWER_CASE[pos] : UPPER_CASE[pos];
-            weightAdjustment = rowweight + AdjustWeight(c,x+1,l+1);
+            weightAdjust = rowweight + AdjustWeight(c,x+1,l+1);
             xyAdjust = AdjustPosition(c,x+1,l+1);
-
+            
             GlobalPosition(
               TYPEBALL_RAD,
               latitude+xyAdjust[1],
-              (5-x)*CHARACTER_LONGITUDE+xyAdjust[0],
+              (5-x)*CHARACTER_LONGITUDE+COLUMN_ALIGNMENT+xyAdjust[0],
               ROW_TILT_ADJUST[l] + AdjustTilt(c,x+1,l+1)
             )
-            LetterText(LETTER_HEIGHT, LETTER_ALTITUDE + AdjustAltitude(c,x+1,l+1), TYPEBALL_FONT, weightAdjustment, c);
+            LetterText(LETTER_HEIGHT, LETTER_ALTITUDE + AdjustAltitude(c,x+1,l+1), TYPEBALL_FONT, weightAdjust, c);
         }
     }
 }
@@ -303,43 +306,37 @@ module GlobalPosition(r, latitude, longitude, tiltAdjust)
 }
 
 //// generate reversed embossed text, tapered outwards to ball surface, face curved to match platen
-module LetterText(someTypeSize, someHeight, typeballFont, weightAdjustment, someLetter, platenDiameter=PLATEN_DIA)
+module LetterText(someTypeSize, someHeight, typeballFont, weightAdjustment, someLetter, platenDiameter=40)
 {
     $fn = $preview ? 12 : 24;
     faceScale = 2.25;
  
- render()
     rotate([0,180,90])
-    difference()
+    minkowski()
     {
-        minkowski()
+        intersection()
         {
-            intersection()
+            translate([0,-someTypeSize/2,-someHeight])
+            scale([0.5,0.5,2.0])
+            linear_extrude(height=1)
+            offset(weightAdjustment)
+            minkowski()
             {
-                translate([0,-someTypeSize/2,-someHeight])
-                scale([0.5,0.5,2.0])
-                linear_extrude(height=1)
-                offset(weightAdjustment)
-                minkowski()
-                {
-                    text(size=someTypeSize * faceScale, font=typeballFont, halign="center", someLetter);
-                    polygon([[-HORIZONTAL_WEIGHT_ADJUSTMENT/2,0],[HORIZONTAL_WEIGHT_ADJUSTMENT/2,0],[HORIZONTAL_WEIGHT_ADJUSTMENT/2,EPSILON],[-HORIZONTAL_WEIGHT_ADJUSTMENT/2,EPSILON]]);
-                }
-
-                translate([0,0,-platenDiameter/2-someHeight/2+0.121])
-                rotate([0,90,0])
-                difference()
-                {
-                    cylinder(h=100, r=platenDiameter/2+0.01, center=true, $fn=$preview ? 60 : 360);
-                    cylinder(h=100, r=platenDiameter/2, center=true, $fn=$preview ? 60 : 360);
-                }
-
+                text(size=someTypeSize * faceScale, font=typeballFont, halign="center", someLetter);
+                polygon([[-HORIZONTAL_WEIGHT_ADJUSTMENT/2,0],[HORIZONTAL_WEIGHT_ADJUSTMENT/2,0],[HORIZONTAL_WEIGHT_ADJUSTMENT/2,EPSILON],[-HORIZONTAL_WEIGHT_ADJUSTMENT/2,EPSILON]]);
             }
-     
-            cylinder(h=someHeight, r1=0, r2=0.75*someHeight);
+
+            translate([0,0,-platenDiameter/2-someHeight/2+0.121])
+            rotate([0,90,0])
+            difference()
+            {
+                cylinder(h=100, r=platenDiameter/2+0.01, center=true, $fn=$preview ? 60 : 360);
+                cylinder(h=100, r=platenDiameter/2, center=true, $fn=$preview ? 60 : 360);
+            }
+
         }
-        translate([-3,-3,1])
-          cube([6,6,6]);
+ 
+        cylinder(h=someHeight, r1=0, r2=0.75*someHeight);
     }
 }
 
@@ -351,7 +348,7 @@ module HollowBall()
         Ball();
 
         translate([0,0,-20+INSIDE_CURVE_START])
-        cylinder(r=INSIDE_RAD, h=20, $fn=$preview ? 60 : 360); // needs to be smooth!
+            cylinder(r=INSIDE_RAD, h=20, $fn=$preview ? 60 : 360); // needs to be smooth!
     }
     intersection()
     {
@@ -368,17 +365,17 @@ module Ball()
     {
         sphere(r=TYPEBALL_RAD, $fn=$preview ? 40 : 160);
  
-        translate([-20,-20, TYPEBALL_TOP_ABOVE_CENTRE-EPSILON])
-            cube([40,40,6]);
+        translate([-15,-15, TYPEBALL_TOP_ABOVE_CENTRE-EPSILON])
+            cube([30,30,6]);
         
-        translate([-20,-20, TYPEBALL_SKIRT_TOP_BELOW_CENTRE - 12])   // ball/skirt fudge factor
-            cube([40,40,12]);
+        translate([-15,-15, TYPEBALL_SKIRT_TOP_BELOW_CENTRE - 12])   // ball/skirt fudge factor
+            cube([30,30,12]);
         
         intersection()
         {
             sphere(r=sqrt(INSIDE_RAD^2+INSIDE_CURVE_START^2), $fn=$preview ? 60 : 160);
-            translate([-20,-20,INSIDE_CURVE_START-EPSILON])
-                cube([40,40,7]);
+            translate([-15,-15,INSIDE_CURVE_START-EPSILON])
+                cube([30,30,7]);
         }
     }
 
@@ -420,6 +417,7 @@ module Tooth()
     rotate([180, -90, 0])
     {
         // notch between teeth must be big enough to trap detent
+        scale([1.0,88/96,1.0])
         linear_extrude(30)
         polygon(points=[[0,1.9], [2.2,0.4], [3.2,0.14], [3.2, -0.14], [2.2, -0.4], [0,-1.9]]);
     }
@@ -439,8 +437,8 @@ module TopFace()
         cylinder(r1=r+2, r2=r, h=TYPEBALL_TOP_THICKNESS+RIB_HEIGHT+LOWER_EDGE_ADJUST);
 
         translate([0, 0, TYPEBALL_TOP_ABOVE_CENTRE - TYPEBALL_TOP_THICKNESS - RIB_HEIGHT - LOWER_EDGE_ADJUST - EPSILON])
-        cylinder(h=RIB_HEIGHT/2+1.0, r1=r+2, r2=0);
-
+        cylinder(h=RIB_HEIGHT/2, r1=r+2, r2=0);
+            
         translate([0, 0, TYPEBALL_TOP_ABOVE_CENTRE - TYPEBALL_TOP_THICKNESS - RIB_HEIGHT - EPSILON])
         cylinder(r=BOSS_INNER_RAD,h=TYPEBALL_TOP_THICKNESS*2+RIB_HEIGHT);
     }   
@@ -451,8 +449,8 @@ module TopMarkings()
     // Alignment marker triangle on top face
     translate([DEL_BASE_FROM_CENTRE, 0, TYPEBALL_TOP_ABOVE_CENTRE - DEL_DEPTH + EPSILON])
     linear_extrude(DEL_DEPTH)
-    polygon(points=[[3.4,0],[0.4,1.3],[0.4,-1.3]]);
-    
+    polygon(points=[[3.4,0],[1.3,1.1],[0.4,0.6],[0.4,-0.6],[1.3,-1.1]]);
+
     // Emboss a label onto top face
     translate([-8.5, 0, TYPEBALL_TOP_ABOVE_CENTRE - DEL_DEPTH])
     rotate([0,0,270])
@@ -511,33 +509,13 @@ module CentreBoss()
     }    
 }
 
-// The full-length slot in the tilt ring boss at the (not quite) half past one o'clock position, required for S1
-
-module Slot()
+module Slots()
 {
-    rotate([0, 0, SLOT_ANGLE])
-    translate([0, -SLOT_WIDTH/2, 0])
-    cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH, 40]);
-}
-
-// The partial-length slot in the tilt ring boss at the (not quite) half past seven o'clock position
-module Notch()
-{
-    r = NOTCH_WIDTH/2;
-    
-    rotate([0, 0, NOTCH_ANGLE])
-    translate([-0.4, -r, TYPEBALL_TOP_ABOVE_CENTRE - BOSS_HEIGHT - EPSILON])
-    rotate([0,90,0])
-    
-    union()
+    for ( i=[0:3] )
     {
-        h = NOTCH_HEIGHT - r + EPSILON;
-        
-        linear_extrude(NOTCH_DEPTH + BOSS_INNER_RAD)
-        polygon(points=[[0,-NOTCH_MOUTH_X], [-NOTCH_MOUTH_Y,0], [-h,0], [-h,NOTCH_WIDTH], [-NOTCH_MOUTH_Y,NOTCH_WIDTH], [0,NOTCH_WIDTH+NOTCH_MOUTH_X]]);
-        
-        translate([r-NOTCH_HEIGHT,r,0])
-        cylinder(h=NOTCH_DEPTH+BOSS_INNER_RAD, r=r);
+        rotate([0, 0, SLOT_ANGLE + 90*i])
+        translate([0, -SLOT_WIDTHS[i]/2, 0])
+        cube([SLOT_DEPTHS[i] + BOSS_INNER_RAD, SLOT_WIDTHS[i], 40]);
     }
 }
 
