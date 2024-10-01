@@ -55,3 +55,8 @@ function AdjustTilt(c,x,y) =
 
 // Finally, we generate the model:
 TypeBall();
+
+
+// To check text size at the given LETTER_HEIGHT value you can comment out the TypeBall call and uncomment one of these:
+// TextGauge("This is example text at 12 pitch", 12);
+// TextGauge("This is example text at 10 pitch", 10);
