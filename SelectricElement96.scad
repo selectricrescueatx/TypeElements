@@ -165,7 +165,7 @@ $fn = FACETS;
 // Parameters have been tuned for printing on a Creality Halot Mage resin printer, using Sunlu ABS-Like resin
 
 // latitudes of the four rows of type, top to bottom
-LATITUDES = [ 31.0, 15.7, 0, -15.7 ];
+LATITUDES = [ 31.1, 15.7, 0, -15.7 ];
 
 // overrideable function for adjusting position of individual characters, added to CHARACTER_WEIGHT_ADJUSTMENT
 
@@ -189,7 +189,7 @@ SKIRT_HEIGHT = TYPEBALL_HEIGHT - TYPEBALL_TOP_ABOVE_CENTRE+ TYPEBALL_SKIRT_TOP_B
 TOOTH_PEAK_OFFSET_FROM_CENTRE = 6.1; // Lateral offset of the tilt ring detent pawl
 
 // Parameters for the centre boss that goes onto tilt ring spigot (upper ball socket)
-BOSS_INNER_RAD = 4.35;
+BOSS_INNER_RAD = 4.36;
 BOSS_OUTER_RAD = 5.8;
 BOSS_HEIGHT = 8.07;
 
