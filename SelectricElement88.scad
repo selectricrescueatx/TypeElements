@@ -130,13 +130,13 @@ TypeBall();
 // ---------------------------------------------------
 
 // How far the type's contact face projects outwards above the ball surface
-LETTER_ALTITUDE = 1.9;
+LETTER_ALTITUDE = 1.7;
 
 // overrideable function for adjusting altitude of individual characters. c is the printing character, e.g. '&', x and y are the position on the ball
 function AdjustAltitude(c,x,y) = 0;
 
 // Tweak tilt of characters per row for better descenders/balance. Ordered top row to bottom. Amount is backwards rotation: top goes back and bottom goes forward
-ROW_TILT_ADJUST = [ -0.3, -0.6, 0, 0.8 ];
+ROW_TILT_ADJUST = [ 0.2, -0.2, 0.8, 1.4 ];
 
 // overrideable function for further adjustment to tilt of individual characters
 function AdjustTilt(c,x,y) = 0;
@@ -158,16 +158,17 @@ $fn = FACETS;
 // --- probably shouldn't mess with stuff below unless you're tuning for a specific printer ---
 
 // Parameters have been tuned for printing on a Creality Halot Mage resin printer, using Sunlu ABS-Like resin
+// 2025.7.26 - increased INSIDE_RAD to account for extra shrinkage in surprise 2024 "experimental" reformulation by Sunlu :(
 
 // latitudes of the four rows of type
-LATITUDES = [ 32.5, 16.2, -0.2, -16.4 ];
+LATITUDES = [ 32.0, 15.9, -0.5, -16.6 ];
 
 // overrideable function for adjusting position of individual characters, added to CHARACTER_WEIGHT_ADJUSTMENT
 
 function AdjustPosition(c,x,y) = [0,0];
 
-TYPEBALL_RAD = 33.4 / 2;
-INSIDE_RAD = 28.15 / 2;
+TYPEBALL_RAD = 33.55 / 2;
+INSIDE_RAD = 28.26 / 2;
 TYPEBALL_HEIGHT = 21.5;
 TYPEBALL_TOP_ABOVE_CENTRE = 11.4; // Flat top is this far above the sphere centre
 TYPEBALL_TOP_THICKNESS = 1.65;
@@ -184,7 +185,7 @@ SKIRT_HEIGHT = TYPEBALL_HEIGHT - TYPEBALL_TOP_ABOVE_CENTRE+ TYPEBALL_SKIRT_TOP_B
 TOOTH_PEAK_OFFSET_FROM_CENTRE = 6.1; // Lateral offset of the tilt ring detent pawl
 
 // Parameters for the centre boss that goes onto tilt ring spigot (upper ball socket)
-BOSS_INNER_RAD = 4.34;
+BOSS_INNER_RAD = 4.35;
 BOSS_OUTER_RAD = 5.8;
 BOSS_HEIGHT = 8.07;
 
